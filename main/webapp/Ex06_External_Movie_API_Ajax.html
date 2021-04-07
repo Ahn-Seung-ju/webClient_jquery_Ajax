@@ -65,6 +65,19 @@
 			//console.log(data);
 			let th = "<tr><th>순위</th><th>영화제목</th><th>개봉일</th></tr>";
 			$(th).appendTo('.showMovieList');
+			
+			$.ajax(
+						{
+							url: movieAPI,
+							type: "GET",
+							dataType: "jason",
+							
+							
+						}
+						
+			
+					);
+			
 			$.getJSON(movieAPI,data,function(data,textStatus,xhr){
 				//console.log(data);
 				$(data).each(function(index, obj){
