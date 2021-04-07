@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<style type="text/css">
+		#menudiv {
+			board :"1px";
+			width: "300px";
+			height: "300px";
+			background-color: "blue";
+		}
+	</style>
+	<script type="text/javascript">
+		/*
+			low-level interface 비동기 함수 (jquery.ajax(), $.ajax())
+			$.ajax(url,[settings]);
+		
+			url : 요청주소
+			[settings] >> 여러개의 옵션 >> {json 객체}
+			
+			옵션
+			dataType: 서버가 클라이언트에게 응답하는 데이터 형식 정의
+			Text: json, html, text 	(responseText)
+			xml	: xml (responseXml)
+			
+			https://api.jquery.com/jQuery.ajax/ API를 보고 확인
+			
+		*/
+		$(function(){
+			$('#message').click(function(){
+				//비동기 함수
+				$.ajax(
+						
+							{
+								url:"Ex02_Server_menu.html",
+								dataType:"html", // 서버가 응답하는 데이터 형식
+								success: function(responsedata){
+									//서버에서 응답이왔고 그 응답이 정상이라면
+									//$('#menudiv').html(responsedata);
+									$('#menudiv').html($(responsedata).find('li'));
+								}
+							}
+						
+						);
+			});
+		})
+	</script>
+</head>
+<body>
+	<div id = "menudiv">
+		<a href = "#" id = "menu1"></a>
+	</div>
+	<span id = "message">클릭하세요</span>
+</body>
+</html>

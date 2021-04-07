@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.12.1/themes/sunny/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<style type="text/css">
+	.showMovieList	{
+						border: 1px;
+						
+					}
+</style>
+<script type="text/javascript">
+/* window.onload = function() {
+		let movierank = [];   // 순위배열
+		let moviename = [];   // 영화이름배열
+		let movieopenDt = []; // 개봉일배열
+		let table = document.createElement("table");
+		for ( let i in data.boxOfficeResult.dailyBoxOfficeList) {
+			movierank.push(data.boxOfficeResult.dailyBoxOfficeList[i].rank);
+			moviename.push(data.boxOfficeResult.dailyBoxOfficeList[i].movieNm);
+			movieopenDt.push(data.boxOfficeResult.dailyBoxOfficeList[i].openDt);
+		}
+		let cols = movierank.length;
+		let lows = 3;
+		console.log(movierank);
+		console.log(moviename);
+		console.log(movieopenDt);
+		let col;
+		for (let i = 0; i < cols; i++) {
+			col = document.createElement("tr");
+			for (let j = 0; j < lows; j++) {
+				let tddd = document.createElement("td");
+				if (j == 0) {
+					let text = document.createTextNode(movierank[i]);
+					tddd.appendChild(text);
+				} else if (j == 1) {
+					let text = document.createTextNode(moviename[i]);
+					tddd.appendChild(text);
+				} else if (j == 2) {
+					let text = document.createTextNode(movieopenDt[i]);
+					tddd.appendChild(text);
+				}
+				col.appendChild(tddd);
+			}
+			document.getElementById("table").appendChild(col);
+		}
+	} */
+	$(function(){
+		$('#search').datepicker({
+			dateFormat: "yymmdd",
+			maxDate: "-1D"
+		});
+		
+		
+		
+		$('#btn').click(function(){
+			$(".showMovieList").empty();
+			let movieAPI = "http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=f5eef3421c602c6cb7ea224104795888"
+			let data = {targetDt:$('#search').val()}
+			//console.log(data);
+			let th = "<tr><th>순위</th><th>영화제목</th><th>개봉일</th></tr>";
+			$(th).appendTo('.showMovieList');
+			$.getJSON(movieAPI,data,function(data,textStatus,xhr){
+				//console.log(data);
+				$(data).each(function(index, obj){
+					console.log(index);
+					console.log(obj);
+				})
+				$.each(data,function(index, obj){
+					console.log("index " + index);
+					console.log(obj);
+					for(let index in obj.dailyBoxOfficeList){
+						//console.log("key" + key);
+						//console.log("index " + index);
+						//console.log(obj.dailyBoxOfficeList[index].rank);
+						//console.log(obj.dailyBoxOfficeList[index].movieNm);
+						//console.log("movieNm " + obj.movieNm);
+						let tr = $('<tr></tr>').html(
+														"<td>" + obj.dailyBoxOfficeList[index].rank + "</td>" +
+														"<td>" + obj.dailyBoxOfficeList[index].movieNm + "</td>" +
+														"<td>" + obj.dailyBoxOfficeList[index].openDt + "</td>" 
+													)
+						//$(tr).appendTo('.showMovieList');
+						$('.showMovieList').append(tr);
+					}
+				});
+			});
+		});
+	})
+</script>
+</head>
+<body>
+	날짜 정하기: <input type = "text" id = "search">
+	<input type = "button" value = "검색하기" id = "btn">
+	<div id = "showList">
+		<table class = "showMovieList">
+			<tr><th>순위</th><th>영화제목</th><th>개봉일</th></tr>
+		</table>
+	</div>
+</body>
+</html>
