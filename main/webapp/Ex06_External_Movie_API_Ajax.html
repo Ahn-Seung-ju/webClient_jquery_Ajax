@@ -5,14 +5,59 @@
 <title>Insert title here</title>
 <link rel="stylesheet"
 	href="//code.jquery.com/ui/1.12.1/themes/sunny/jquery-ui.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
 <style type="text/css">
-	.showMovieList	{
-						border: 1px;
-						
-					}
+.highcharts-figure, .highcharts-data-table table {
+	min-width: 320px;
+	max-width: 800px;
+	margin: 1em auto;
+}
+
+.highcharts-data-table table {
+	border-collapse: collapse;
+	border: 1px solid #EBEBEB;
+	margin: 10px auto;
+	text-align: center;
+	width: 100%;
+	max-width: 500px;
+	font-family: Verdana, sans-serif;
+}
+
+.highcharts-data-table caption {
+	padding: 1em 0;
+	font-size: 1.2em;
+	color: #555;
+}
+
+.highcharts-data-table th {
+	font-weight: 600;
+	padding: 0.5em;
+}
+
+.highcharts-data-table td, .highcharts-data-table th,
+	.highcharts-data-table caption {
+	padding: 0.5em;
+}
+
+.highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even)
+	{
+	background: #f8f8f8;
+}
+
+.highcharts-data-table tr:hover {
+	background: #f1f7ff;
+}
+
+input[type="number"] {
+	min-width: 50px;
+}
 </style>
 <script type="text/javascript">
 /* window.onload = function() {
@@ -50,7 +95,10 @@
 			document.getElementById("table").appendChild(col);
 		}
 	} */
+	
 	$(function(){
+		const movieNm = [];
+		const audiCnt = [];
 		$('#search').datepicker({
 			dateFormat: "yymmdd",
 			maxDate: "-1D"
@@ -59,7 +107,9 @@
 		
 		
 		$('#btn').click(function(){
+			//리스트 만들기
 			$(".showMovieList").empty();
+			//$('.highcharts-figure').show();
 			let movieAPI = "http://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=f5eef3421c602c6cb7ea224104795888"
 			let data = {targetDt:$('#search').val()}
 			//console.log(data);
@@ -71,21 +121,17 @@
 							url: movieAPI,
 							type: "GET",
 							dataType: "jason",
-							
-							
 						}
-						
-			
 					);
 			
 			$.getJSON(movieAPI,data,function(data,textStatus,xhr){
 				//console.log(data);
 				$(data).each(function(index, obj){
-					console.log(index);
-					console.log(obj);
+					//console.log(index);
+					//console.log(obj);
 				})
 				$.each(data,function(index, obj){
-					console.log("index " + index);
+					//console.log("index " + index);
 					console.log(obj);
 					for(let index in obj.dailyBoxOfficeList){
 						//console.log("key" + key);
@@ -102,18 +148,108 @@
 						$('.showMovieList').append(tr);
 					}
 				});
+				$(data).each(function(index,obj){
+					//console.log(index);
+					//console.log(obj.boxOfficeResult.dailyBoxOfficeList[index]);
+					for(let index in obj.boxOfficeResult.dailyBoxOfficeList){
+						console.log(index);
+						console.log(obj.boxOfficeResult.dailyBoxOfficeList[index].movieNm);
+						movieNm.push(obj.boxOfficeResult.dailyBoxOfficeList[index].movieNm);
+						audiCnt.push(obj.boxOfficeResult.dailyBoxOfficeList[index].audiCnt/100);
+					}
+				});
+				console.log(movieNm);
+				console.log(audiCnt);
+				//차트 생성
+				Highcharts.chart('container', {
+					  chart: {
+					    plotBackgroundColor: null,
+					    plotBorderWidth: null,
+					    plotShadow: false,
+					    type: 'pie'
+					  },
+					  title: {
+					    text: 'BOXOFFICE CHART'
+					  },
+					  tooltip: {
+					    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+					  },
+					  accessibility: {
+					    point: {
+					      valueSuffix: '%'
+					    }
+					  },
+					  plotOptions: {
+					    pie: {
+					      allowPointSelect: true,
+					      cursor: 'pointer',
+					      dataLabels: {
+					        enabled: true,
+					        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+					      }
+					    }
+					  },
+					  series: [{
+					    name: 'audiCnt',
+					    colorByPoint: true,
+					    data: [{
+					      name: movieNm[0],
+					      y: audiCnt[0]
+					    }, {
+					      name: movieNm[1],
+					      y: audiCnt[1]
+					    }, {
+					      name: movieNm[2],
+					      y: audiCnt[2]
+					    }, {
+					      name: movieNm[3],
+					      y: audiCnt[3]
+					    }, {
+					      name: movieNm[4],
+					      y: audiCnt[4]
+					    }, {
+					      name: movieNm[5],
+					      y: audiCnt[5]
+					    }, {
+					      name: movieNm[6],
+					      y: audiCnt[6]
+					    }, {
+					      name: movieNm[7],
+					      y: audiCnt[7]
+					    }, {
+					      name: movieNm[8],
+					      y: audiCnt[8]
+					    },{
+						  name: movieNm[9],
+						  y: audiCnt[9]
+						}]
+					  }]
+					});
+				movieNm.length=0;
+				audiCnt.length=0;
 			});
+			
+			
 		});
 	})
 </script>
 </head>
 <body>
-	날짜 정하기: <input type = "text" id = "search">
-	<input type = "button" value = "검색하기" id = "btn">
-	<div id = "showList">
-		<table class = "showMovieList">
-			<tr><th>순위</th><th>영화제목</th><th>개봉일</th></tr>
+	날짜 정하기:
+	<input type="text" id="search">
+	<input type="button" value="검색하기" id="btn">
+	<div id="showList">
+		<table class="showMovieList">
+			<tr>
+				<th>순위</th>
+				<th>영화제목</th>
+				<th>개봉일</th>
+			</tr>
 		</table>
 	</div>
+	<figure class="highcharts-figure">
+		<div id="container"></div>
+		
+	</figure>
 </body>
 </html>
